@@ -95,7 +95,7 @@ std::string CLoger::getFileName()
 		processId = getpid();
 		char szprocess[30];
 		snprintf(szprocess, sizeof(szprocess), "%u", processId);
-		strFileName = szprocess;
+		strFileName += szprocess;
 #endif // _WIN32
 	}
 	strFileName += szTimeFileExt;
@@ -369,6 +369,9 @@ void CLoger::setLogPath(const char *path)
 		{
 			// 创建目录成功
 		}
+		else{
+			perror("create log folder failed");
+		}
 	}
 #endif // _WIN32
 
@@ -513,8 +516,9 @@ int CLoger::openLogFile()
 	if (-1 == fd)
 	{
 		// 打开文件出错
-		snprintf(szErr, sizeof(szErr), "open file:%s failed, error:%d", getFileName().c_str(), errno);
+		snprintf(szErr, sizeof(szErr), "open file:%s failed, error:%d", newFileName.c_str(), errno);
 		writeLogerEvent(szErr);
+		perror(szErr);
 		return -1;
 	}
 #endif // _WIN32
